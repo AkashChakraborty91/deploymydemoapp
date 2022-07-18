@@ -1,0 +1,69 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 border-right">
+            <header class="modal-header"><h2>Displaying all Todos:</h2></header>
+
+            <section class="form-group">
+                <input type="search" #data (keyup)="onSearch(data)" class="form-control" placeholder="Search Todos......">
+            </section>
+            <table class="table table-hover table-bordered">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Created</th>
+                </tr>
+                <ng-container *ngIf="searchedList.length!=0 then searchedBlock else paginatedBlock"></ng-container>
+                <ng-template #searchedBlock>
+                    <tr *ngFor="let todo of searchedList">
+                        <td>
+                            <input type="radio" name="r1" (change)="onChange(todo)">
+                        </td>
+                        <td>{{todo.title}}</td>
+                        <td>{{todo.description}}</td>
+                        <td>{{todo.created}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template #paginatedBlock>
+                    <tr *ngFor="let todo of todoList | paginate:{
+                        itemsPerPage:5,
+                        currentPage:page
+                    }">
+                        <td>
+                            <input type="radio" name="r1" (change)="onChange(todo)">
+                        </td>
+                        <td>{{todo.title}}</td>
+                        <td>{{todo.description}}</td>
+                        <td>{{todo.created}}</td>
+                    </tr>
+                </ng-template>
+                
+            </table>
+            <pagination-controls *ngIf="searchedList.length==0" (pageChange)="page = $event"></pagination-controls>
+        </div>
+        <div class="col-lg-6">
+            <header class="modal-header"><h2>Add Todo:</h2></header>
+            {{newTodos|json}}
+            <form>
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" name="t1" [(ngModel)]="newTodos.title" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea name="t2" [(ngModel)]="newTodos.desc" required class="form-control" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <section *ngIf="selectedTodo.length==0">
+                        <button (click)="onSubmit()" class="btn btn-sm btn-outline-primary">Add</button>
+                    </section>
+                    <section *ngIf="selectedTodo.length!=0">
+                        <button (click)="onUpdate()" class="btn btn-sm btn-outline-primary">Update</button>
+                         |      
+                        <button (click)="onDelete()" class="btn btn-sm btn-outline-primary">Delete</button>
+                    </section>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
